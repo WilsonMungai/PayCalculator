@@ -70,10 +70,21 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 30,
               ),
+              // Button action
               GestureDetector(
                 onTap: () {
                   debugPrint("button tapped");
+                  showModalBottomSheet(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)),
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container(
+                          height: 400,
+                        );
+                      });
                 },
+                // Button style
                 child: Container(
                     height: 60,
                     width: double.infinity,
