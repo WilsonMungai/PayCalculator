@@ -67,6 +67,27 @@ class _HomePageState extends State<HomePage> {
                   hintText: "Enter number of hours worked"),
               inputTextFields(
                   title: "Hourly rate", hintText: "Enter hourly rate"),
+              SizedBox(
+                height: 30,
+              ),
+              GestureDetector(
+                onTap: () {
+                  debugPrint("button tapped");
+                },
+                child: Container(
+                    height: 60,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.purple,
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Calculate",
+                        style: TextStyle(fontSize: 30),
+                      ),
+                    )),
+              )
             ],
           ),
         ),
