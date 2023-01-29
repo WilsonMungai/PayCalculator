@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(MaterialApp(
       home: HomePage(),
-
       // remove debug banner
       debugShowCheckedModeBanner: false,
     ));
@@ -13,6 +12,75 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  TextEditingController rateTextField = new TextEditingController();
+  TextEditingController hoursTextField = new TextEditingController();
+  TextEditingController employeeNameTextField = new TextEditingController();
+
+  // Variables
+  double totalHours = 0.0;
+  double hourlyRate = 0.0;
+  double earnedPay = 0.0;
+  double overtimePay = 0.0;
+  double regularPay = 0.0;
+  double tax = 0.0;
+  String employeeName = "";
+
+  // Function to calculate pay
+  void payCalculation() {
+    double hours = 0.0;
+    double rate = 0.0;
+    double overtime = 0.0;
+    double pay = 0.0;
+    double tax = 0.0;
+    double totalPay = 0.0;
+
+    // if (hours > 40) {
+    //   totalPay = (double.parse(hoursTextField.value.text) *
+    //           double.parse(rateTextField.value.text)) /
+    //       2;
+    // } else {
+    //   totalPay = (double.parse(hoursTextField.value.text) *
+    //       double.parse(rateTextField.value.text));
+    //   // pay = (double.parse(hoursTextField.value.text) - 40) *
+    //   //         double.parse(rateTextField.value.text) *
+    //   //         1.5 +
+    //   //     40 * double.parse(rateTextField.value.text);
+    // }
+
+    hours = double.parse(hoursTextField.value.text);
+
+    rate = double.parse(rateTextField.value.text);
+
+    if (hours <= 40) {
+      totalPay = double.parse(hoursTextField.value.text) *
+          double.parse(rateTextField.value.text);
+    } else {
+      totalPay = (double.parse(hoursTextField.value.text) - 40) *
+              double.parse(rateTextField.value.text) *
+              1.5 +
+          40 * double.parse(rateTextField.value.text);
+    }
+    pay = double.parse(hoursTextField.value.text) *
+        double.parse(rateTextField.value.text);
+    overtime = ((double.parse(hoursTextField.value.text) - 40) *
+                double.parse(rateTextField.value.text) *
+                1.5 +
+            40 * double.parse(rateTextField.value.text)) -
+        pay;
+
+    tax = pay * 0.18;
+
+    setState(() {
+      totalHours = hours;
+      hourlyRate = rate;
+      overtimePay = overtime;
+      regularPay = pay;
+      tax = tax;
+      earnedPay = totalPay;
+    });
+  }
+
+  // Scaffold
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +89,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Body
   Widget body() {
     return Container(
         child: Column(children: [
@@ -41,12 +110,19 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Text(
                       "Work Pay",
-                      style: TextStyle(fontSize: 40),
+                      style: TextStyle(
+                          fontSize: 40,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w200),
                     ),
                     SizedBox(
                       height: 10,
                     ),
-                    Text("Calculator", style: TextStyle(fontSize: 50))
+                    Text("Calculator",
+                        style: TextStyle(
+                            fontSize: 50,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold))
                   ]),
             ),
           )),
@@ -61,18 +137,25 @@ class _HomePageState extends State<HomePage> {
             // TextFields to input data
             children: [
               inputTextFields(
-                  title: "Employee Name", hintText: "Enter employee name"),
+                  title: "Employee Name",
+                  hintText: "John Mark",
+                  controller: employeeNameTextField),
               inputTextFields(
                   title: "Number of Hours",
-                  hintText: "Enter number of hours worked"),
+                  hintText: "40",
+                  controller: hoursTextField),
               inputTextFields(
-                  title: "Hourly rate", hintText: "Enter hourly rate"),
+                  title: "Hourly rate",
+                  hintText: "20.00",
+                  controller: rateTextField),
               SizedBox(
                 height: 30,
               ),
               // Button action
               GestureDetector(
                 onTap: () {
+                  payCalculation();
+                  Future.delayed(Duration.zero);
                   debugPrint("button tapped");
                   showModalBottomSheet(
                       shape: RoundedRectangleBorder(
@@ -80,7 +163,33 @@ class _HomePageState extends State<HomePage> {
                       context: context,
                       builder: (BuildContext context) {
                         return Container(
-                          height: 400,
+                          height: 500,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 30, 0, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Total Pay",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                result(
+                                    title: "Number of Hours",
+                                    amount: totalHours),
+                                result(
+                                    title: "Hourly Rate", amount: hourlyRate),
+                                result(title: "Total Pay", amount: earnedPay),
+                                result(
+                                    title: "Regular Pay", amount: regularPay),
+                                result(
+                                    title: "Overtime Pay", amount: overtimePay),
+                                result(title: "Tax", amount: earnedPay * 0.18),
+                              ],
+                            ),
+                          ),
                         );
                       });
                 },
@@ -95,7 +204,10 @@ class _HomePageState extends State<HomePage> {
                     child: Center(
                       child: Text(
                         "Calculate",
-                        style: TextStyle(fontSize: 30),
+                        style: TextStyle(
+                            fontSize: 30,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
                       ),
                     )),
               )
@@ -107,7 +219,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Input text field
-  Widget inputTextFields({required String title, required String hintText}) {
+  Widget inputTextFields(
+      {required String title,
+      required TextEditingController controller,
+      required String hintText}) {
     return Column(
       children: [
         Text(
@@ -122,6 +237,7 @@ class _HomePageState extends State<HomePage> {
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(30)),
           child: TextField(
+            controller: controller,
             decoration: InputDecoration(
                 border: OutlineInputBorder(borderSide: BorderSide.none),
                 hintText: hintText),
@@ -131,6 +247,21 @@ class _HomePageState extends State<HomePage> {
           height: 10,
         )
       ],
+    );
+  }
+
+  // Calculation Results
+  Widget result({required String title, required double amount}) {
+    return ListTile(
+      title: Text(
+        title,
+        style: TextStyle(fontSize: 20),
+      ),
+      trailing: Padding(
+        padding: const EdgeInsets.only(right: 20.0),
+        child: Text(amount.toStringAsFixed(2), style: TextStyle(fontSize: 20)),
+        // amount.toStringAsFixed(2),
+      ),
     );
   }
 }
