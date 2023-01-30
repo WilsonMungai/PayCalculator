@@ -28,46 +28,34 @@ class _HomePageState extends State<HomePage> {
 
   // Calculation Logic
   void payCalculation() {
-    double hours = 0.0;
-    double rate = 0.0;
+    double hours;
+    double rate;
     double overtime = 0.0;
-    double pay = 0.0;
-    double totalPay = 0.0;
+    double pay;
+    double totalPay;
+    String name = employeeNameTextField.text + " your pay is:";
 
+    // Get input data
     hours = double.parse(hoursTextField.value.text);
     rate = double.parse(rateTextField.value.text);
 
     if (hours <= 40) {
       pay = hours * rate;
       totalPay = pay;
-      // totalPay = double.parse(hoursTextField.value.text) *
-      //     double.parse(rateTextField.value.text);
     } else {
       pay = (40 * rate);
       overtime = (hours - 40) * rate * 1.5;
       totalPay = pay + overtime;
-      // totalPay = (double.parse(hoursTextField.value.text) - 40) *
-      //         double.parse(rateTextField.value.text) *
-      //         1.5 +
-      //     (40 * double.parse(rateTextField.value.text));
     }
-    // Regular pay calculation
-    // pay = double.parse(hoursTextField.value.text) *
-    //     double.parse(rateTextField.value.text);
-    // Overtime pay calculation
-    // overtime = (hours - 40) * rate * 1.5;
-    // ((double.parse(hoursTextField.value.text) - 40) *
-    //             double.parse(rateTextField.value.text) *
-    //             1.5 +
-    //         40 * double.parse(rateTextField.value.text)) -
-    //     pay;
 
+    // Retrieving input data
     setState(() {
       totalHours = hours;
       hourlyRate = rate;
       overtimePay = overtime;
       regularPay = pay;
       earnedPay = totalPay;
+      employeeName = name;
     });
   }
 
@@ -128,26 +116,20 @@ class _HomePageState extends State<HomePage> {
             // TextFields to input data
             children: [
               inputTextFields(
-                  title: "Employee Name",
-                  hintText: "John Mark",
-                  controller: employeeNameTextField,
-                  errorText: employeeNameTextField.value.text.isEmpty
-                      ? validate = true
-                      : validate = false),
+                title: "Employee Name",
+                hintText: "John Mark",
+                controller: employeeNameTextField,
+              ),
               inputTextFields(
-                  title: "Number of Hours",
-                  hintText: "40",
-                  controller: hoursTextField,
-                  errorText: hoursTextField.value.text.isEmpty
-                      ? validate = true
-                      : validate = false),
+                title: "Number of Hours",
+                hintText: "40",
+                controller: hoursTextField,
+              ),
               inputTextFields(
-                  title: "Hourly rate",
-                  hintText: "20.00",
-                  controller: rateTextField,
-                  errorText: rateTextField.value.text.isEmpty
-                      ? validate = true
-                      : validate = false),
+                title: "Hourly rate",
+                hintText: "20.00",
+                controller: rateTextField,
+              ),
               SizedBox(
                 height: 30,
               ),
@@ -163,30 +145,29 @@ class _HomePageState extends State<HomePage> {
                       context: context,
                       builder: (BuildContext context) {
                         return Container(
-                          height: 500,
+                          height: 430,
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(20, 30, 0, 0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  "Total Pay",
-                                  style: TextStyle(color: Colors.black),
-                                ),
+                                empolyee(title: employeeName),
+                                // Text("Results"),
                                 SizedBox(
                                   height: 10,
                                 ),
+                                result(title: "Total Pay:", amount: earnedPay),
                                 result(
-                                    title: "Number of Hours",
+                                    title: "Number of Hours:",
                                     amount: totalHours),
                                 result(
-                                    title: "Hourly Rate", amount: hourlyRate),
-                                result(title: "Total Pay", amount: earnedPay),
+                                    title: "Hourly Rate:", amount: hourlyRate),
                                 result(
-                                    title: "Regular Pay", amount: regularPay),
+                                    title: "Regular Pay:", amount: regularPay),
                                 result(
-                                    title: "Overtime Pay", amount: overtimePay),
-                                result(title: "Tax", amount: earnedPay * 0.18),
+                                    title: "Overtime Pay:",
+                                    amount: overtimePay),
+                                result(title: "Tax:", amount: earnedPay * 0.18),
                               ],
                             ),
                           ),
@@ -210,7 +191,11 @@ class _HomePageState extends State<HomePage> {
                             fontWeight: FontWeight.bold),
                       ),
                     )),
-              )
+              ),
+              SizedBox(
+                height: 70,
+              ),
+              name()
             ],
           ),
         ),
@@ -219,11 +204,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Input text field
-  Widget inputTextFields(
-      {required String title,
-      required TextEditingController controller,
-      required String hintText,
-      required bool errorText}) {
+  Widget inputTextFields({
+    required String title,
+    required TextEditingController controller,
+    required String hintText,
+  }) {
     return Column(
       children: [
         Text(
@@ -251,6 +236,16 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Employee input name
+  Widget empolyee({required String title}) {
+    return Column(children: [
+      Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+    ]);
+    SizedBox(
+      height: 10,
+    );
+  }
+
   // Calculation Results
   Widget result({required String title, required double amount}) {
     return ListTile(
@@ -264,5 +259,23 @@ class _HomePageState extends State<HomePage> {
         // amount.toStringAsFixed(2),
       ),
     );
+  }
+
+  // name and student id
+  Widget name() {
+    return Container(
+        height: 80,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.purple,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Center(
+          child: Text(
+            "Wilson Mungai Muguthi \n 301287641",
+            style: TextStyle(
+                fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ));
   }
 }
