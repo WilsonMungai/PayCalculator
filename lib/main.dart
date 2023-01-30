@@ -23,59 +23,50 @@ class _HomePageState extends State<HomePage> {
   double overtimePay = 0.0;
   double regularPay = 0.0;
   double tax = 0.0;
+  bool validate = false;
   String employeeName = "";
 
-  // Function to calculate pay
+  // Calculation Logic
   void payCalculation() {
     double hours = 0.0;
     double rate = 0.0;
     double overtime = 0.0;
     double pay = 0.0;
-    double tax = 0.0;
     double totalPay = 0.0;
 
-    // if (hours > 40) {
-    //   totalPay = (double.parse(hoursTextField.value.text) *
-    //           double.parse(rateTextField.value.text)) /
-    //       2;
-    // } else {
-    //   totalPay = (double.parse(hoursTextField.value.text) *
-    //       double.parse(rateTextField.value.text));
-    //   // pay = (double.parse(hoursTextField.value.text) - 40) *
-    //   //         double.parse(rateTextField.value.text) *
-    //   //         1.5 +
-    //   //     40 * double.parse(rateTextField.value.text);
-    // }
-
     hours = double.parse(hoursTextField.value.text);
-
     rate = double.parse(rateTextField.value.text);
 
     if (hours <= 40) {
-      totalPay = double.parse(hoursTextField.value.text) *
-          double.parse(rateTextField.value.text);
+      pay = hours * rate;
+      totalPay = pay;
+      // totalPay = double.parse(hoursTextField.value.text) *
+      //     double.parse(rateTextField.value.text);
     } else {
-      totalPay = (double.parse(hoursTextField.value.text) - 40) *
-              double.parse(rateTextField.value.text) *
-              1.5 +
-          40 * double.parse(rateTextField.value.text);
+      pay = (40 * rate);
+      overtime = (hours - 40) * rate * 1.5;
+      totalPay = pay + overtime;
+      // totalPay = (double.parse(hoursTextField.value.text) - 40) *
+      //         double.parse(rateTextField.value.text) *
+      //         1.5 +
+      //     (40 * double.parse(rateTextField.value.text));
     }
-    pay = double.parse(hoursTextField.value.text) *
-        double.parse(rateTextField.value.text);
-    overtime = ((double.parse(hoursTextField.value.text) - 40) *
-                double.parse(rateTextField.value.text) *
-                1.5 +
-            40 * double.parse(rateTextField.value.text)) -
-        pay;
-
-    tax = pay * 0.18;
+    // Regular pay calculation
+    // pay = double.parse(hoursTextField.value.text) *
+    //     double.parse(rateTextField.value.text);
+    // Overtime pay calculation
+    // overtime = (hours - 40) * rate * 1.5;
+    // ((double.parse(hoursTextField.value.text) - 40) *
+    //             double.parse(rateTextField.value.text) *
+    //             1.5 +
+    //         40 * double.parse(rateTextField.value.text)) -
+    //     pay;
 
     setState(() {
       totalHours = hours;
       hourlyRate = rate;
       overtimePay = overtime;
       regularPay = pay;
-      tax = tax;
       earnedPay = totalPay;
     });
   }
@@ -139,15 +130,24 @@ class _HomePageState extends State<HomePage> {
               inputTextFields(
                   title: "Employee Name",
                   hintText: "John Mark",
-                  controller: employeeNameTextField),
+                  controller: employeeNameTextField,
+                  errorText: employeeNameTextField.value.text.isEmpty
+                      ? validate = true
+                      : validate = false),
               inputTextFields(
                   title: "Number of Hours",
                   hintText: "40",
-                  controller: hoursTextField),
+                  controller: hoursTextField,
+                  errorText: hoursTextField.value.text.isEmpty
+                      ? validate = true
+                      : validate = false),
               inputTextFields(
                   title: "Hourly rate",
                   hintText: "20.00",
-                  controller: rateTextField),
+                  controller: rateTextField,
+                  errorText: rateTextField.value.text.isEmpty
+                      ? validate = true
+                      : validate = false),
               SizedBox(
                 height: 30,
               ),
@@ -222,7 +222,8 @@ class _HomePageState extends State<HomePage> {
   Widget inputTextFields(
       {required String title,
       required TextEditingController controller,
-      required String hintText}) {
+      required String hintText,
+      required bool errorText}) {
     return Column(
       children: [
         Text(
