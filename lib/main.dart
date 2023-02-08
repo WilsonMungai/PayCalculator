@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
               ),
               inputTextFields(
                 title: "Number of Hours",
-                hintText: "40",
+                hintText: "40.00",
                 controller: hoursTextField,
               ),
               inputTextFields(
@@ -195,7 +195,6 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 70,
               ),
-              name()
             ],
           ),
         ),
@@ -259,23 +258,5 @@ class _HomePageState extends State<HomePage> {
         // amount.toStringAsFixed(2),
       ),
     );
-  }
-
-  // name and student id
-  Widget name() {
-    return Container(
-        height: 80,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.purple,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Center(
-          child: Text(
-            "Wilson Mungai Muguthi \n 301287641",
-            style: TextStyle(
-                fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-        ));
   }
 }
